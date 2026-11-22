@@ -8,7 +8,7 @@ from ...core.config import settings
 
 @lru_cache
 def get_llm() -> ChatAnthropic:
-    return ChatAnthropic(model=settings.model_name, temperature=0, max_tokens=2048,
+    return ChatAnthropic(model=settings.model_name, max_tokens=2048,
                          timeout=45, max_retries=2, api_key=settings.anthropic_api_key or "missing")
 
 

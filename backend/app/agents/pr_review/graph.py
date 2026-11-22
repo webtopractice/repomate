@@ -188,6 +188,9 @@ FILE_SYSTEM = (
     "Find real problems introduced by the change: bugs, security issues, performance problems, unclear code, "
     "missing tests/docs. Be specific and avoid generic advice and style nitpicks unless asked. "
     "Only comment on lines that were changed. Cite the NEW-file line number shown at the left. "
+    "Judge the change against the PR's stated intent: do NOT flag changes consistent with it. "
+    "Only report problems visible in the diff shown; do NOT speculate about code you cannot see "
+    "(no 'verify elsewhere' or 'might remain' findings). Prefer fewer, higher-confidence findings. "
     "If the change looks fine, return no findings.\n" + UNTRUSTED_NOTICE
 )
 
@@ -251,7 +254,8 @@ async def synthesize(state: State) -> dict:
 
     pr = state["pr"]
     brief = "\n".join(f"- [{x['severity']}] {x['file']}:{x.get('line')} {x['title']}" for x in merged) or "(no findings)"
-    msgs = [SystemMessage("You summarize pull-request reviews for maintainers. Be concise and honest. "
+    msgs = [SystemMessage("You summarize pull-request reviews for maintainers. Be concise, honest and plain; "
+                          "describe the findings as your own review, never as 'supplied' by someone. "
                           + UNTRUSTED_NOTICE),
             HumanMessage(wrap_untrusted("pr_title", pr["title"]) + "\n"
                          + wrap_untrusted("pr_description", pr["body"][:1000])
